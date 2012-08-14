@@ -7,11 +7,6 @@ require("../../checkLogin.php");
 require("../../checkAdmin.php");
 require("../../theme.php");
 
-if (!checkAdmin($_SESSION['username'])){
-      ob_start();
-      header( "Location: index.php" );
-      ob_flush();
-}
 getThemeHeader();
 
 getThemeTitle("Statistik Konfiguration");
