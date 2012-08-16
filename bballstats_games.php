@@ -15,11 +15,17 @@ function FormSubmitTeam(el) {
 
   var teaminfo = el.value.split(':');
 
-  document.teamlist.teamid.value=teaminfo[0]
-  document.teamlist.teamname.value=teaminfo[1]
+  document.teamlist.teamid.value=teaminfo[0];
+  document.teamlist.teamname.value=teaminfo[1];
   teamlist.submit() ;
 
   return;
+}
+
+function OpenGame(gameid){
+  
+  document.games.gameid.value=gameid;
+  games.submit();
 }
 
 <?php
@@ -63,15 +69,20 @@ echo 'Hold:
  </select>
 </form><br>';
 
-$query = mysql_query("SELECT * FROM `games` WHERE team='".$_POST['teamid']."'");
+$query = mysql_query("SELECT * FROM `games` WHERE team='".$_POST['teamid']."' ORDER BY `date` ASC");
 
 while($game = mysql_fetch_assoc($query)){
 
      $udehold = explode("Mod ",$game['text']);
      $hjemmehold = explode(":",$game['text']);
+     echo '<a href="javascript:void(OpenGame(\''.$game["id"].'\'))"><img width="15px" src="img/edit.png"></a> ';
      echo $game['id'].' '.$game['date'].' '.$game['time'].' '.$hjemmehold[0].' mod '.$udehold[1].' '.$game['result'].'<br>';
 
 }
+
+echo '<form method="post" action="bballstats_stats.php" id="games" name="games">
+       <input type="hidden" id="gameid" name="gameid">
+      </form>';
 
 getThemeBottom();
 
