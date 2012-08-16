@@ -70,6 +70,8 @@ echo 'Hold:
  </select>
 </form><br>';
 
+if($_POST['teamid']!=""){
+
 $query = mysql_query("SELECT * FROM `games` WHERE team='".$_POST['teamid']."' ORDER BY `date` ASC");
 
 while($game = mysql_fetch_assoc($query)){
@@ -81,6 +83,7 @@ while($game = mysql_fetch_assoc($query)){
 
 }
 
+}
 echo '<form method="post" action="bballstats_stats.php" id="games" name="games">
        <input type="hidden" id="gameid" name="gameid">
       </form>';
