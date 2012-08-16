@@ -6,6 +6,7 @@ require("../../checkConfig.php");
 require("../../checkLogin.php");
 require("../../checkAdmin.php");
 require("../../theme.php");
+require("bballstats_check_database.php");
 
 getThemeHeader();
 
