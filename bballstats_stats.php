@@ -79,9 +79,14 @@ echo '<table class="stats" cellpadding="0" border="0">
      <th width="150px" align="left">Spiller</th>';
 $query = mysql_query("SHOW COLUMNS FROM `bballstats_stats`");
 while($stattype = mysql_fetch_assoc($query)){
-     if(($stattype['Field']!="id") && ($stattype['Field']!="spiller") && ($stattype['Field']!="kampid"))
-           echo '<th width="45px">'.$stattype["Field"].'</th>';
-          
+     if(($stattype['Field']!="id") && ($stattype['Field']!="spiller") && ($stattype['Field']!="kampid")){
+           if(substr($stattype["Field"],0,2)=="£"){
+                   list($start,$operation,$stat)=split("£",$stattype["Field"]);
+           }else{
+                   $stat = $stattype["Field"];
+           }
+           echo '<th width="45px">'.$stat.'</th>';
+     }     
 }     
 echo '</tr>';
 echo '</table>';
@@ -106,16 +111,21 @@ echo '<form method="post" name="stats" id="stats">
       </form>';
 ?>
 
-<!--<script type="text/javascript" src="js/jquery.js"></script> -->
-
 <script>
 
 $(document).ready(function(){
-$('.statsform').change(function(){
-  var form = $(this).closest('.statsform');
-  $.post("ajax.php", form.serialize());
-});
-                                            
+  $('.statsform').change(function(){
+    var form = $(this).closest('.statsform');
+  
+    $.ajax({type: "POST",url: "ajax.php",dataType: "json",data: form.serialize(),success: function(data){
+          $.each(data, function(label,value){
+               form.children();
+               form.children().find('.'+label);
+               form.children().find('.'+label).val(value);
+          });
+    }
+    });
+  }); 
 });
 </script>
 

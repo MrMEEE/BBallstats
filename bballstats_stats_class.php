@@ -1,6 +1,7 @@
 <?php
 
 require("../../connect.php");
+require("bballstats_common.php");
 
 class stats{
 
@@ -20,10 +21,17 @@ class stats{
                 $return .= '<form method="post" action="#" id="statsform" name="statsform" class="statsform">';
                 $return .= '<table class="stats" cellpadding="0" border="0">';
                 $return .= '<tr>';
-                $return .= '<td width="150px"><a href="javascript:void(RemovePlayerStats(\''.$playerinfo["id"].'\'))"><img width="15px" src="img/remove.png"></a>'.$playerinfo["fornavn"].' '.$playerinfo["efternavn"].'</td>';
+                $return .= '<td width="150px"><a href="javascript:void(RemovePlayerStats(\''.$this->data["id"].'\'))"><img width="15px" src="img/remove.png"></a>'.$playerinfo["fornavn"].' '.$playerinfo["efternavn"].'</td>';
                             while($stattype = mysql_fetch_assoc($query)){
+                            $extra = "";
+                            if(substr($stattype["Field"],0,2)=="£"){
+                                    list($start,$operation,$stat)=split("£",$stattype["Field"]);
+                                    $extra = 'readonly="readonly"';
+                            }else{
+                                    $stat = $stattype["Field"];
+                            }
                                         if(($stattype['Field']!="id") && ($stattype['Field']!="spiller") && ($stattype['Field']!="kampid")){
-                                                $return .= '<td width="45px" align="center"><input  style="width:30px;text-align:right;" type="text" name="'.$stattype['Field'].'" id="'.$stattype['Field'].'" value="'.$this->data[$stattype['Field']].'"></td>';
+                                                $return .= '<td width="45px" align="center"><input  style="width:30px;text-align:right;" type="text" class="'.$stat.'" name="'.$stattype['Field'].'" id="'.$stattype['Field'].'" '.$extra.' value="'.$this->data[$stattype['Field']].'"></td>';
                                         }
                             }
                         
@@ -40,19 +48,50 @@ class stats{
         public function changeValues($values){
         
                 $str="";
+                $json="{";
                 foreach ($values as $key => $value){
-                        if(($key!="id") && ($key!="action"))
+                        if(($key!="id") && ($key!="action")){
+                                if(substr($key,0,2)=="£"){
+                                    $calcstr="";
+                                    list($start,$calc,$name)=split("£",$key);
+                                    $calcarr = str_split($calc."!");
+                                    $operators = array("/","*","+","-","(",")");
+                                    $numbers = array("0","1","2","3","4","5","6","7","8","9");
+                                    $operant = "";
+                                    $last = "";
+                                    $calcstr = "";
+                                    foreach ($calcarr as $char){
+                                        if(in_array($char,$operators) || in_array($char,$numbers)){
+                                            if($last == "operant"){
+                                                $calcstr .= $values[$operant];
+                                                $operant = "";
+                                            }
+                                            $calcstr .= $char;
+                                            $last = "operator";    
+                                        }elseif($char == "!"){
+                                            $calcstr .= $values[$operant];
+                                        }else{
+                                            $operant .= $char;
+                                            $last = "operant";
+                                        }
+                                    
+                                    }
+                                    $compute = create_function("", "return (" . $calcstr . ");" );
+                                    $value = 0 + $compute();
+                                    $json .= '"'.$name.'" : "'.$value.'", ';
+                                }
+                                
                                 $str .= "`".$key."`='".$value."',";
+                        }
                 }
                 
-                // DEBUG
-                //$str = substr_replace($str ,"",-1);
-                //$myFile = "testFile.txt";
-                //$fh = fopen($myFile, 'w');
-                //fwrite($fh,$str);
-                //fclose($fh);
+                $str = substr_replace($str ,"",-1);
                 
+                $json = substr_replace($json ,"",-2);
+                $json .= "}";
                 mysql_query("UPDATE bballstats_stats SET ".$str." WHERE id='".$values['id']."'");
+                
+                echo $json;
         
         }
 
