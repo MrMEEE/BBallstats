@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 require("../../connect.php");
 require("../../config.php");
@@ -56,7 +56,7 @@ foreach($teams as $teamid){
      if($teamid != ""){
          $teaminfo = mysql_fetch_assoc(mysql_query("SELECT * FROM calendars WHERE id = '".$teamid."'"));
          $teamlist .= '<option value="'.$teamid.'"';
-         if($_POST['teamid']==$teamid){
+         if($_GET['teamid']==$teamid){
                $teamlist .= ' selected';
          }
          $teamlist .= '>'.$teaminfo['team'].'</option>';

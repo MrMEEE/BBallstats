@@ -80,9 +80,9 @@ $query = mysql_query("SELECT * FROM `calendars`");
 while($row = mysql_fetch_assoc($query)){
 
       if(in_array($row['id'],$hold)){
-            $stats .= $row['team'].'  <a href="bballstats_config.php?remove='.$row['id'].'"><img width="15px" src="img/remove.png"></a><br>';
+            $stats .= '<a href="bballstats_config.php?remove='.$row['id'].'"><img width="15px" src="img/remove.png"></a> '.$row['team'].'<br>';
       }else{
-            $nostats .= $row['team'].'  <a href="bballstats_config.php?add='.$row['id'].'"><img width="15px" src="img/add.png"></a><br>';
+            $nostats .= '<a href="bballstats_config.php?add='.$row['id'].'"><img width="15px" src="img/add.png"></a> '.$row['team'].'<br>';
       }
 
 }
