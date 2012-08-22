@@ -94,7 +94,25 @@ echo '</table>';
 foreach($stats as $stat){
         echo $stat;
 }
+echo '<form method="post" action="#" id="teamstats" name="teamstats" class="teamstats">';
+echo '<table class="teamstats" cellpadding="0" border="0">
+      <tr>
+      <td width="150px" align="left">Hold</td>';
+$query = mysql_query("SHOW COLUMNS FROM `bballstats_stats`");
+while($stattype = mysql_fetch_assoc($query)){
+      if(substr($stattype["Field"],0,2)=="£"){
+            list($start,$operation,$stat)=split("£",$stattype["Field"]);
+      }else{     
+            $stat = $stattype["Field"];
+      }
+      if(($stattype['Field']!="id") && ($stattype['Field']!="spiller") && ($stattype['Field']!="kampid")){
+            echo '<td width="45px" align="center"><input  style="width:30px;text-align:right;" type="text" class="'.$stat.'" name="'.$stattype['Field'].'" id="'.$stattype['Field'].'" readonly="readonly"></td>';
+      }
 
+}
+echo '</tr>';
+echo '</table>';
+echo '</form>';
 
 echo '<br><h3>Tilføj Spillere: </h3><br>';
 
@@ -109,24 +127,61 @@ echo '<form method="post" name="stats" id="stats">
         <input type="hidden" id="playerid" name="playerid">
         <input type="hidden" id="action" name="action">
       </form>';
+
+echo '<form method="post" class="getstats" name="getstats" id="getstats">
+        <input type="hidden" name="action" id="action" value="get">
+        <input type="hidden" name="gameid" id="gameid" value="'.$_POST['gameid'].'">
+      </form>';
+
 ?>
 
 <script>
 
 $(document).ready(function(){
+var getform = $('form#getstats');
+var setform = $('form#teamstats');
+$.ajax({type: "POST", url: "ajax.php",dataType: "json",data: getform.serialize() ,success: function(data){
+      $.each(data, function(label,value){
+        setform.children();
+        setform.children().find('.'+label);
+        setform.children().find('.'+label).val(value);
+      });
+  },error: function(xhr, status, err) {
+      alert(status + ": " + err);
+  }
+});
+  
   $('.statsform').change(function(){
     var form = $(this).closest('.statsform');
-  
-    $.ajax({type: "POST",url: "ajax.php",dataType: "json",data: form.serialize(),success: function(data){
+    $.ajax({type: "POST", url: "ajax.php",dataType: "json",data: form.serialize(),success: function(data){
           $.each(data, function(label,value){
                form.children();
                form.children().find('.'+label);
                form.children().find('.'+label).val(value);
           });
+    }, error: function(xhr, status, err) {
+            alert(status + ": " + err);
     }
+                  
+    
+    });
+    var getform = $('form#getstats');
+    var setform = $('form#teamstats');
+    
+    $.ajax({type: "POST", url: "ajax.php",dataType: "json",data: getform.serialize() ,success: function(data){
+          $.each(data, function(label,value){
+            setform.children();
+            setform.children().find('.'+label);
+            setform.children().find('.'+label).val(value);
+          });
+    },error: function(xhr, status, err) {
+            alert(status + ": " + err);
+      }
+                   
     });
   }); 
 });
+
 </script>
 
 <?php
