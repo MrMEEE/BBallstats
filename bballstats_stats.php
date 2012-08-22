@@ -74,6 +74,10 @@ $excludelist = substr_replace($excludelist ,"",-1);
 
 echo '<h3>Kamp nummer: '.$kampinfo['id'].', '.$hjemmehold[0].' mod '.$udehold[1].', '.$kampinfo['date'].'</h3><br>';
 
+if($kampinfo['result'] !=""){
+      echo '<br><h3>Resultat: '.$kampinfo['result'].'</h3><br>';
+}
+
 echo '<table class="stats" cellpadding="0" border="0">     
      <tr>
      <th width="150px" align="left">Spiller</th>';
