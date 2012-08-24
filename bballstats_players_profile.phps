@@ -26,7 +26,6 @@ function loadinparent(id){
          opener.document.spiller.teamid.value=document.spiller.teamid.value;
          opener.document.spiller.beskrivelse.value=document.spiller.beskrivelse.value;
          opener.document.spiller.position.value=document.spiller.position.value;
-         opener.document.spiller.photo.value=document.photo.photo.value;
          opener.document.spiller.submit();
          window.close();
     }
@@ -106,13 +105,7 @@ function deleteimage(large_image, thumbnail_image){
 $(document).ready(function () {
 		$('#loader').hide();
 		$('#progress').hide();
-		if(getPhoto()!=""){
-			var photoarr = getPhoto().split("_");
-			var largePhoto = "resize_"+photoarr[1];
-		 	$('#uploaded_image').html('<img src="photos/'+getPhoto()+'" alt="Thumbnail Image"/><br /><a href="javascript:deleteimage(\'photos/'+largePhoto+'\', \'photos/'+getPhoto()+'\');">Delete Images</a>');  
-		 	$('#thumbnail_form').hide();
-		}   
-		   var myUpload = $('#upload_link').upload({
+		var myUpload = $('#upload_link').upload({
 		   name: 'image',
 		   action: '<?=$image_handling_file?>',
 		   enctype: 'multipart/form-data',
@@ -148,8 +141,7 @@ $(document).ready(function () {
 					$('#uploaded_image').html('');
 					$('#thumbnail_form').hide();
 				}
-		   
-		 }
+		   }
 		});
 	
 	//create the thumbnail
@@ -186,8 +178,10 @@ $(document).ready(function () {
 						//<img src="'+responseLargeImage+'" alt="Large Image"/>&nbsp;
 						//hide the thumbnail form
 						$('#thumbnail_form').hide();
-						setPhoto(responseThumbImage);
-						
+						var form = $('form#test');
+						form.children();
+						form.children().find('#fornavn');
+						form.children().find('#fornavn').val(responseThumbImage);
 					}else{
 						$('#upload_status').show().html('<h1>Unexpected Error</h1><p>Please try again</p>'+response);
 						//reactivate the imgareaselect plugin to allow another attempt.
@@ -204,16 +198,7 @@ $(document).ready(function () {
 
 
 //]]>
-</script>
-<script type="text/javascript" id="runscript">
-function setPhoto(photoname){
-	var photoarr = photoname.split("/")
-	document.photo.photo.value=photoarr[1];
-}
-function getPhoto(){
-        return document.photo.photo.value;
-}
-</script>
+
 <?php
 
 getThemeTitle("Spiller");
@@ -288,17 +273,18 @@ Beskrivelse: <br>
 		<input type="submit" name="save_thumb" value="Gem Billede" id="save_thumb" />
 	</form>
 </div>
-<p><a id="upload_link" style="background:#ffffff; color: black;" href="#">Klik for at tilføje et billede</a></p>
-<span id="loader" style="display:none;"><img src="img/loader.gif" alt="Loading..."/></span> <span id="progress"></span>
-<br />
-
 </td>
 </tr>
 </table>
 <br>
+<!-- <div id="upload_status" style="font-size:12px; width:80%; margin:10px; padding:5px; display:none; border:1px #999 dotted; background:#eee;"></div> -->
 
-<form id="photo" class="photo" name="photo">
-<input type="hidden" id="photo" name="photo" class="photo" value="<?php echo $player['photo'] ?>">
+<p><a id="upload_link" style="background:#ffffff; color: black;" href="#">Klik for at tilføje et billede</a></p>
+<span id="loader" style="display:none;"><img src="img/loader.gif" alt="Loading..."/></span> <span id="progress"></span>
+<br />
+
+<form id="test" class="test">
+<input type="text" id="test" class="test">
 </form>
 
 <?php

@@ -38,7 +38,7 @@ function FormSubmitTeam(el) {
 function redigerSpiller(id,teamid){   
  
   var path = "bballstats_players_profile.php?id=" + id + "&teamid=" + teamid; 
-  mywindow = window.open(path,"mywindow","menubar=1,resizable=1,width=550,height=450");
+  mywindow = window.open(path,"mywindow","menubar=1,resizable=1,width=1000,height=650");
 }
 
 <?php
@@ -50,9 +50,9 @@ $selectedteam = $_POST['teamid'];
 if(isset($_POST['id'])){
 
      if($_POST['id'] == "-1"){
-            mysql_query("INSERT INTO `bballstats_players` SET hold='".$_POST['teamid']."', fornavn='".$_POST['fornavn']."', efternavn='".$_POST['efternavn']."',nummer='".$_POST['nummer']."', position='".$_POST['position']."', beskrivelse='".$_POST['beskrivelse']."'");
+            mysql_query("INSERT INTO `bballstats_players` SET hold='".$_POST['teamid']."', fornavn='".$_POST['fornavn']."', efternavn='".$_POST['efternavn']."',nummer='".$_POST['nummer']."', position='".$_POST['position']."', beskrivelse='".$_POST['beskrivelse']."',photo='".$_POST['photo']."'");
      }else{
-            mysql_query("UPDATE `bballstats_players` SET hold='".$_POST['teamid']."', fornavn='".$_POST['fornavn']."', efternavn='".$_POST['efternavn']."',nummer='".$_POST['nummer']."', position='".$_POST['position']."', beskrivelse='".$_POST['beskrivelse']."' WHERE id='".$_POST['id']."'");
+            mysql_query("UPDATE `bballstats_players` SET hold='".$_POST['teamid']."', fornavn='".$_POST['fornavn']."', efternavn='".$_POST['efternavn']."',nummer='".$_POST['nummer']."', position='".$_POST['position']."', beskrivelse='".$_POST['beskrivelse']."',photo='".$_POST['photo']."' WHERE id='".$_POST['id']."'");
      }
 }
 
@@ -112,6 +112,7 @@ echo 'Hold:
  <input type="hidden" id="fjernspiller" name="fjernspiller" value="">
  <input type="hidden" id="position" name="position" value="">
  <input type="hidden" id="beskrivelse" name="beskrivelse" value="">
+ <input type="hidden" id="photo" name="photo" value="">
 </form>
 <br>';
 if($_POST['teamid'] !=""){
